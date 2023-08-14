@@ -11,6 +11,9 @@ target/
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+# Maven Files #
+dependency-reduced-pom.xml
+
 # Package Files #
 *.jar
 *.war
