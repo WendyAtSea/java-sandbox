@@ -84,6 +84,44 @@ public class SolutionsTests {
     }
 
     @Test
+    public void testLCS() {
+        String s1 = "www.educative.io/explore";
+        String s2 = "educative.io/edpresso";
+        String value = Solutions.findLCS(s1, s2);
+        Assertions.assertEquals("educative.io/epre", value);
+
+        s1 = "xyzabcdefgABCabcd";
+        s2 = "abcdorabcdefgh";
+        value = Solutions.findLCS(s1, s2);
+        Assertions.assertEquals("abcdabcd", value);
+
+        s1 = "aaa";
+        s2 = "aa";
+        value = Solutions.findLCS(s1, s2);
+        Assertions.assertEquals("aa", value);
+        
+        s1 = "efgh";
+        s2 = "abc";
+        value = Solutions.findLCS(s1, s2);
+        Assertions.assertEquals("", value);
+        
+        s1 = "aaaa";
+        s2 = "aaaa";
+        value = Solutions.findLCS(s1, s2);
+        Assertions.assertEquals("aaaa", value);
+
+        s1 = "ABCDGH";
+        s2 = "AEDFHR";
+        value = Solutions.findLCS(s1, s2);
+        Assertions.assertEquals("ADH", value);
+
+        s1 = "AGGTAB";
+        s2 = "GXTXAYB";
+        value = Solutions.findLCS(s1, s2);
+        Assertions.assertEquals("GTAB", value);
+    }
+
+    @Test
     public void testSCSLength() {
         String s1 = "abcf";
         String s2 = "bdcf";
@@ -146,5 +184,14 @@ public class SolutionsTests {
         s = "abcdef";
         value = Solutions.LPSLength(s);
         Assertions.assertEquals(1, value);
+    }
+
+    @Test
+    public void testFindSI() {
+        String m = "abd";
+        String n = "cef";
+        String p = "abcdef";
+        boolean value = Solutions.findSI(m, n, p);
+        Assertions.assertTrue(value);
     }
 }

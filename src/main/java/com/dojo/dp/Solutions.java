@@ -1,8 +1,5 @@
 package com.dojo.dp;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /* Dynamic Programming */
 public class Solutions {
     /**
@@ -119,6 +116,56 @@ public class Solutions {
 
         return dp[s1.length()][s2.length()];
     }
+
+    /**
+     * Find the longest common subsequence of the two give strings.
+     * 
+     * @param s1 String
+     * @param s2 String
+     * @return String return "" if not found.
+     */
+    public static String findLCS(String s1, String s2) {
+        if (s1 == null || s1.isEmpty()) return s2;
+        if (s2 == null || s2.isEmpty()) return s1;
+
+        // let's figureout the longest common subsequence length
+        int rows = s1.length();
+        int cols = s2.length();
+        int[][] dp = new int[rows + 1][cols + 1];
+        for (int i = 1; i <= rows; i++) {
+            char c1 = s1.charAt(i-1);
+            for (int j = 1; j <= cols; j++) {
+                char c2 = s2.charAt(j-1);
+                if (c1 == c2) {
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                }
+            }
+        }
+
+        // Construct the LCS
+        int k = dp[rows][cols] - 1;  // last index for the longest common subsequence
+        if (k < 0) return "";
+
+        char[] chars = new char[k + 1];
+        int i = rows;
+        int j = cols;
+        while (i > 0 && j > 0) {
+            if (s1.charAt(i-1) == s2.charAt(j-1)) {
+                chars[k] = s1.charAt(i-1);
+                k--;
+                i--;
+                j--;
+            } else if (dp[i][j-1] > dp[i-1][j]) {
+                j--;
+            } else {
+                i--;
+            }
+        }
+
+        return new String(chars);
+    }
     
     /**
      * Given two strings, write a function to find the length of their shortest common superstring. 
@@ -171,16 +218,86 @@ public class Solutions {
     }
 
     /**
-     * Given two strings, write a function to find the length of their shortest common superstring. 
-     * A superstring is a string that has both input strings as substrings.
+     * Given two strings, write a function to find the shortest common superstring. 
+     * A superstring is a string that has both input strings as substrings. 
+     * You can use the superstring to construct each of the sub strings by remove 0 or more
+     * characters without changing the character order.
      * 
      * @param s1 String
      * @param s2 String
      * @return String
      */
     public static String findSCS(String s1, String s2) {
-        // TO DO
-        return "";
+        if (s1 == null || s1.isEmpty()) return s2;
+        if (s2 == null || s2.isEmpty()) return s1;
+
+        // let's find the longest common subsequence
+        int[][] dp = new int[s1.length() + 1][s2.length() + 1];
+        for (int i = 1; i <= s1.length(); i++) {
+            char c1 = s1.charAt(i-1);
+            for (int j = 1; j <= s2.length(); j++) {
+                if (c1 == s2.charAt(j-1)) {
+                    dp[i][j] = dp[i-1][j-1] + 1;  // add this char to sequence
+                } else {
+                    dp[i][j] = Math.max(dp[i][j-1], dp[i-1][j]); // choose the direction with longest sequence
+                }
+            }
+        }
+
+        int i = s1.length();
+        int j = s2.length();
+        int k = dp[i][j] - 1;
+        if (k < 0) {
+            return s1 + s2; // no common subsequence
+        }
+
+        // Construct the longest common subsequence
+        char[] lcs = new char[k+1];
+        while (i > 0 && j > 0) {
+            if (s1.charAt(i-1) == s2.charAt(j-1)) {
+                lcs[k] = s1.charAt(i-1);
+                k--;
+                i--;
+                j--;
+            } else if (dp[i][j-1] > dp[i-1][j]) {
+                j--;
+            } else {
+                i--;
+            }
+        }
+
+        char[] scs = new char[s1.length() + s2.length() - dp[s1.length()][s2.length()]];
+        int n = 0;
+        i = 0;
+        j = 0;
+        k = 0;
+        while (i < s1.length() && j < s2.length() && k < lcs.length) {
+            if (s1.charAt(i) == lcs[k]) {
+                scs[n] = lcs[k];
+                n++;
+                k++;
+                i++;
+                j++;
+            } else {
+                scs[n] = s1.charAt(i);
+                n++;
+                i++;
+                scs[n] = s2.charAt(j);
+                n++;
+                j++;
+            }
+        }
+        while (i < s1.length()) {
+            scs[n] = s1.charAt(i);
+            n++;
+            i++;
+        }
+        while (j < s2.length()) {
+            scs[n] = s2.charAt(j);
+            n++;
+            j++;
+        }
+        return new String(scs);
     }
 
     /**
@@ -211,5 +328,49 @@ public class Solutions {
             }
         }
         return maxLength;
+    }
+
+    /**
+     * Give three strings m, n, and p, write a function to find out 
+     * if p has been formed by interleaving m and n. 
+     * ‘p’ should be considered to be an interleaved form of m and n 
+     * if it contains all the letters from m and n with the order of 
+     * the letters preserved.
+     * 
+     * @param m String
+     * @param n String
+     * @param p String 
+     * @return boolean 
+     */
+    public static boolean findSI(String m, String n, String p) {
+        if (p.length() != (m.length() + n.length())) return false;
+
+        boolean[][] dp = new boolean[m.length() + 1][n.length() + 1];
+        dp[0][0] = true;  // when all empty, m+n == p
+        
+        for (int i = 1; i <= m.length(); i++) {
+            if (p.charAt(i-1) == m.charAt(i-1)) {
+                dp[i][0] = true;
+            }
+        }
+        for (int i = 1; i <= n.length(); i++) {
+            if (p.charAt(i-1) == n.charAt(i-1)) {
+                dp[0][i] = true;
+            }
+        }
+        for (int i = 1; i <= m.length(); i++) {
+            char mc = m.charAt(i - 1);
+            for (int j = 1; j <= n.length(); j++) {
+                char nc = n.charAt(j - 1);
+                char pc = p.charAt(i + j - 1);
+                if (pc == mc) {
+                    dp[i][j] = dp[i-1][j];
+                }
+                if (pc == nc) {
+                    dp[i][j] |= dp[i][j-1];
+                }
+            }
+        }
+        return dp[m.length()][n.length()];
     }
 }
