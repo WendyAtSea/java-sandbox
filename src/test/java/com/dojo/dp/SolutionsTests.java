@@ -57,13 +57,94 @@ public class SolutionsTests {
 
     @Test
     public void testLCSLength() {
-        String[] s1 = {"www.educative.io/explore", "xyzabcdefgABCabcd", "aaa", "efgh", "aaaa"};
-        String[] s2 = {"educative.io/edpresso", "abcdorabcdefgh", "aa", "abc", "aaaa"};
-        int[] expectedLengths= {14, 7, 2, 0, 4};
+        String s1 = "www.educative.io/explore";
+        String s2 = "educative.io/edpresso";
+        int value = Solutions.lcsLength(s1, s2);
+        Assertions.assertEquals(17, value);
 
-        for (int i = 0; i < s1.length; i++) {
-            int value = Solutions.lcsLength(s1[i], s2[i]);
-            Assertions.assertEquals(expectedLengths[i], value);
-        }
+        s1 = "xyzabcdefgABCabcd";
+        s2 = "abcdorabcdefgh";
+        value = Solutions.lcsLength(s1, s2);
+        Assertions.assertEquals(8, value);
+
+        s1 = "aaa";
+        s2 = "aa";
+        value = Solutions.lcsLength(s1, s2);
+        Assertions.assertEquals(2, value);
+        
+        s1 = "efgh";
+        s2 = "abc";
+        value = Solutions.lcsLength(s1, s2);
+        Assertions.assertEquals(0, value);
+        
+        s1 = "aaaa";
+        s2 = "aaaa";
+        value = Solutions.lcsLength(s1, s2);
+        Assertions.assertEquals(4, value);
+    }
+
+    @Test
+    public void testSCSLength() {
+        String s1 = "abcf";
+        String s2 = "bdcf";
+        int value = Solutions.findSCSLength(s1, s2);
+        Assertions.assertEquals(5, value);  // abdcf
+
+        s1 = "aaa";
+        s2 = "abc";
+        value = Solutions.findSCSLength(s1, s2);
+        Assertions.assertEquals(5, value); // aaabc
+
+        s1 = "www.educative.io/explore";
+        s2 = "educative.io/edpresso";
+        value = Solutions.findSCSLength(s1, s2);
+        Assertions.assertEquals(28, value); 
+
+        s1 = "EducativeIsFun";
+        s2 = "AlgorithmsAreFun";
+        value = Solutions.findSCSLength(s1, s2);
+        Assertions.assertEquals(25, value); 
+    }
+
+    // skip for now
+    public void testSCS() {
+        String s1 = "abcf";
+        String s2 = "bdcf";
+        String value = Solutions.findSCS(s1, s2);
+        Assertions.assertEquals("abdcf", value);  // abdcf
+
+        s1 = "aaa";
+        s2 = "abc";
+        value = Solutions.findSCS(s1, s2);
+        Assertions.assertEquals("aaabc", value); // aaabc
+
+        s1 = "www.educative.io/explore";
+        s2 = "educative.io/edpresso";
+        value = Solutions.findSCS(s1, s2);
+        Assertions.assertEquals("www.educative.io/exdperlessore", value); 
+
+        s1 = "EducativeIsFun";
+        s2 = "AlgorithmsAreFun";
+        value = Solutions.findSCS(s1, s2);
+        Assertions.assertEquals("", value); 
+    }
+
+    @Test
+    public void testLPSLength() {
+        String s = "abdbca";
+        int value = Solutions.LPSLength(s);
+        Assertions.assertEquals(5, value);
+
+        s = "bbbab";
+        value = Solutions.LPSLength(s);
+        Assertions.assertEquals(4, value);
+
+        s = "aba";
+        value = Solutions.LPSLength(s);
+        Assertions.assertEquals(3, value);
+
+        s = "abcdef";
+        value = Solutions.LPSLength(s);
+        Assertions.assertEquals(1, value);
     }
 }

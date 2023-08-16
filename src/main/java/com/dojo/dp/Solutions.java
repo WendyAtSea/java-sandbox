@@ -104,36 +104,112 @@ public class Solutions {
      * @return int the length of the longest common string if exist; otherwise, return 0
      */
     public static int lcsLength(String s1, String s2) {
-        if (s1 == null || s1.isEmpty() || s2 == null || s2.isEmpty()) return 0;
+        int[][] dp = new int[s1.length() + 1][s2.length() + 1];
 
-        int maxLength = 0;
-        HashMap<Character, ArrayList<Integer>> chars = new HashMap<>();
-        for (int i = 0; i < s1.length(); i++) {
-            char c = s1.charAt(i);
-            if (!chars.containsKey(c)) {
-                chars.put(c, new ArrayList<>());
-            }
-            chars.get(c).add(i);
-        }
-
-        for (int i = 0; i < s2.length(); i++) {
-            char c = s2.charAt(i);
-            if (!chars.containsKey(c)) continue;
-
-            for (int j : chars.get(c)) {
-                if (s1.length() - j < maxLength) continue;
-                
-                int a = 1;
-                while (i + a < s2.length() && j + a < s1.length() 
-                    && s1.charAt(j + a) == s2.charAt(i + a)) {
-                    a += 1;
+        for (int i = 1; i <= s1.length(); i++) {
+            char c1 = s1.charAt(i-1);
+            for (int j = 1; j <= s2.length(); j++) {
+                if (c1 == s2.charAt(j-1)) {
+                    dp[i][j] = 1 + dp[i-1][j-1];
+                } else {
+                    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
                 }
-                maxLength = Math.max(maxLength, a);
             }
-
-            if (maxLength > s2.length() - i) break;
         }
 
+        return dp[s1.length()][s2.length()];
+    }
+    
+    /**
+     * Given two strings, write a function to find the length of their shortest common superstring. 
+     * A superstring is a string that has both input strings as substrings.
+     * 
+     * @param s1 String
+     * @param s2 String
+     * @return int
+     */
+    public static int findSCSLength(String s1, String s2) {
+        if (s1 == null || s1.isEmpty()) {
+            if (s2 == null || s2.isEmpty()) return 0;
+            else return s2.length();
+        }
+        if (s2 == null || s2.isEmpty()) {
+            if (s1 == null || s1.isEmpty()) return 0;
+            else return s1.length();
+        }
+
+        // Step 1: initialize the table
+        int n = s1.length();
+        int m = s2.length();
+        int[][] dp = new int[n+1][];
+        for (int i = 0; i <= n; i++) {
+            dp[i] = new int[m+1];
+            for (int j = 0; j <= m; j++) {
+                if (i == 0) {
+                    dp[0][j] = j;  // if s1 is empty
+                } else if (j == 0) {
+                    dp[i][0] = i;  // if s2 is empty
+                } else {
+                    dp[i][j] = 0;
+                }
+            }
+        }
+
+        // Step 2: compare each char in the strings
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                // the chars are the same
+                if (s1.charAt(i-1) == s2.charAt(j-1)) {
+                    dp[i][j] = dp[i-1][j-1] + 1;  // increase the length by 1
+                } else {
+                    dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1]) + 1; // take the longest and increase 1
+                }
+            }
+        }
+
+        return dp[n][m];
+    }
+
+    /**
+     * Given two strings, write a function to find the length of their shortest common superstring. 
+     * A superstring is a string that has both input strings as substrings.
+     * 
+     * @param s1 String
+     * @param s2 String
+     * @return String
+     */
+    public static String findSCS(String s1, String s2) {
+        // TO DO
+        return "";
+    }
+
+    /**
+     * Given a string, find the length of its longest palindromic subsequence. 
+     * In a palindromic subsequence, elements read the same backward and forward.
+     * A subsequence is a sequence that can be derived from another sequence 
+     * by deleting some or no elements without changing the order of the remaining elements.
+     * 
+     * @param s
+     * @return
+     */
+    public static int LPSLength(String s) {
+        if (s == null || s.isEmpty()) return 0;
+
+        int n = s.length();
+        int[][] dp = new int[n + 1][n + 1];
+        int maxLength = 0;
+        for (int i = 1; i <= n; i++) {
+            char c1 = s.charAt(i - 1);
+            for (int j = 1; j <= n; j++) {
+                char c2 = s.charAt(n - j);
+                if (c1 == c2) {
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                    maxLength = Math.max(maxLength, dp[i][j]);
+                } else {
+                    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                }
+            }
+        }
         return maxLength;
     }
 }
